@@ -37,6 +37,8 @@ const STANDARD_SCHEDULE = {
   endMinutes: 1020        // 5:00 PM
 };
 
+const DEFAULT_BYPASS_DURATION = 15; // minutes
+
 async function getDefaultSchedule() {
   const result = await chrome.storage.sync.get('defaultSchedule');
   return result.defaultSchedule || STANDARD_SCHEDULE;
@@ -44,6 +46,15 @@ async function getDefaultSchedule() {
 
 async function setDefaultSchedule(schedule) {
   await chrome.storage.sync.set({ defaultSchedule: schedule });
+}
+
+async function getBypassDuration() {
+  const result = await chrome.storage.sync.get('bypassDuration');
+  return result.bypassDuration || DEFAULT_BYPASS_DURATION;
+}
+
+async function setBypassDuration(minutes) {
+  await chrome.storage.sync.set({ bypassDuration: parseInt(minutes) });
 }
 
 function timeStringToMinutes(timeStr) {

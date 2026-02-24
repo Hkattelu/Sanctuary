@@ -1,57 +1,68 @@
 // blocked/blocked.js
 
-const params = new URLSearchParams(window.location.search);
-const site = params.get('site');
-const promptElement = document.getElementById('prompt');
-const siteElement = document.getElementById('siteName');
-const bypassBtn = document.getElementById('bypassBtn');
+document.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const domain = urlParams.get('site') || 'this site';
+  const siteNameEl = document.getElementById('siteName');
+  const bypassBtn = document.getElementById('bypassBtn');
+  const closeTabBtn = document.getElementById('closeTabBtn');
+  const promptEl = document.getElementById('prompt');
 
-const prompts = [
-  { type: 'intention', text: "You were about to open Reddit. What were you actually looking for?" },
-  { type: 'body', text: "Stand up. Roll your shoulders back. Take three breaths." },
-  { type: 'social', text: "Who haven't you talked to in a while? Send them a message." },
-  { type: 'focus', text: "What's the one thing you'd feel best about finishing today?" }
-];
+  siteNameEl.textContent = domain;
 
-// 1. Log block event on load
-if (site) {
-  siteElement.textContent = `Mindful Pause: ${site}`;
-  chrome.runtime.sendMessage({ type: 'BLOCK_EVENT', domain: site });
-} else {
-  siteElement.textContent = "Mindful Pause";
-}
+  const prompts = [
+    "Is this how you want to spend your time?",
+    "Does this serve your higher purpose?",
+    "Could you find stillness elsewhere?",
+    "What are you seeking in this moment?",
+    "Where is your attention needed most?",
+    "Take a breath. Is this site essential right now?",
+    "What if you chose a different path today?"
+  ];
 
-// 2. Randomly pick a prompt (and replace placeholders)
-function pickPrompt() {
-  const prompt = prompts[Math.floor(Math.random() * prompts.length)];
-  let text = prompt.text;
-  if (site) {
-    // Replace 'Reddit' if mentioned in prompt
-    text = text.replace('Reddit', site.charAt(0).toUpperCase() + site.slice(1));
+  // Pick a random prompt
+  promptEl.textContent = prompts[Math.floor(Math.random() * prompts.length)];
+
+  // Log the block event to background script
+  chrome.runtime.sendMessage({ 
+    type: 'BLOCK_EVENT', 
+    domain: domain 
+  });
+
+  // Countdown for the bypass button
+  let secondsLeft = 15;
+  const countdownLabel = document.getElementById('countdownLabel');
+  
+  if (countdownLabel) {
+    countdownLabel.textContent = `Awaiting stillness (${secondsLeft}s)`;
   }
-  promptElement.textContent = text;
-}
-pickPrompt();
 
-// 3. Countdown timer for bypass
-let secondsLeft = 10;
-const countdownInterval = setInterval(() => {
-  secondsLeft -= 1;
-  if (secondsLeft <= 0) {
-    clearInterval(countdownInterval);
-    bypassBtn.textContent = "I genuinely need this site";
-    bypassBtn.disabled = false;
-  } else {
-    bypassBtn.textContent = `Wait (${secondsLeft}s)...`;
-  }
-}, 1000);
+  const countdown = setInterval(() => {
+    secondsLeft--;
+    if (secondsLeft > 0) {
+      if (countdownLabel) countdownLabel.textContent = `Awaiting stillness (${secondsLeft}s)`;
+    } else {
+      clearInterval(countdown);
+      if (countdownLabel) countdownLabel.textContent = "Ready to proceed";
+      bypassBtn.disabled = false;
+      bypassBtn.classList.add('ready');
+    }
+  }, 1000);
 
-// 4. Handle bypass action
-bypassBtn.addEventListener('click', () => {
-  if (site) {
-    chrome.runtime.sendMessage({ type: 'BYPASS_SITE', domain: site }, (response) => {
-      // Redirect back to the site once the bypass rule is confirmed
-      window.location.href = `https://${site}`;
+  bypassBtn.addEventListener('click', () => {
+    // Send message to background to allow this site temporarily
+    chrome.runtime.sendMessage({ 
+      type: 'BYPASS_SITE', 
+      domain: domain 
+    }, (response) => {
+      if (response && response.status === 'success') {
+        // Redirect back to the original site
+        window.location.href = `https://${domain}`;
+      }
     });
-  }
+  });
+
+  closeTabBtn.addEventListener('click', () => {
+    window.close();
+  });
 });

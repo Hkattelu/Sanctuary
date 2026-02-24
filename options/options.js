@@ -12,6 +12,43 @@ const importBtn = document.getElementById('importBtn');
 const importFile = document.getElementById('importFile');
 const defaultScheduleEditor = document.getElementById('defaultScheduleEditor');
 
+const notificationRoot = document.getElementById('notificationRoot');
+
+function showToast(message, type = 'info') {
+  if (!notificationRoot) return;
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span>${message}</span>`;
+  notificationRoot.appendChild(toast);
+  
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(20px)';
+    setTimeout(() => toast.remove(), 500);
+  }, 3000);
+}
+
+async function renderCairn(totalBlocks) {
+  const cairnContainer = document.getElementById('cairnContainer');
+  if (!cairnContainer) return;
+  
+  cairnContainer.innerHTML = '';
+  // Number of stones: 1 stone per 5 blocks, max 8 stones for visual balance
+  const stoneCount = Math.min(Math.floor(totalBlocks / 5) + 1, 8);
+  
+  for (let i = 0; i < stoneCount; i++) {
+    const stone = document.createElement('div');
+    stone.className = 'stone';
+    // Randomize shape slightly for organic feel
+    const width = 100 - (i * 10);
+    const height = 40 - (i * 2);
+    stone.style.width = `${width}px`;
+    stone.style.height = `${height}px`;
+    stone.style.animationDelay = `${i * 0.1}s`;
+    cairnContainer.appendChild(stone);
+  }
+}
+
 async function renderStats() {
   const last7Days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
@@ -30,16 +67,19 @@ async function renderStats() {
     });
   });
 
-  // Most blocked site
   const topSite = Object.entries(siteCounts).sort((a, b) => b[1] - a[1])[0];
   
-  totalBlocksEl.textContent = totalBlocks;
-  timeSavedEl.textContent = `${totalBlocks * 15}m`;
-  topSiteEl.textContent = topSite ? topSite[0] : '-';
+  if (totalBlocksEl) totalBlocksEl.textContent = totalBlocks;
+  // Assume each block saves ~5 minutes of focus depth
+  if (timeSavedEl) timeSavedEl.textContent = `${totalBlocks * 5}m`;
+  if (topSiteEl) topSiteEl.textContent = topSite ? topSite[0].split('.')[0] : '-';
+
+  renderCairn(totalBlocks);
 }
 
 async function renderSites() {
   const sites = await getBlockedSites();
+  if (!sitesContainer) return;
   sitesContainer.innerHTML = '';
   
   const now = new Date();
@@ -49,7 +89,7 @@ async function renderSites() {
   sites.forEach((site, index) => {
     const clone = siteTemplate.content.cloneNode(true);
     const domainSpan = clone.querySelector('.domain');
-    const statusBadge = clone.querySelector('.status-badge');
+    const statusInd = clone.querySelector('.status-indicator');
     const toggleBtn = clone.querySelector('.toggle-btn');
     const scheduleBtn = clone.querySelector('.edit-schedule-btn');
     const deleteBtn = clone.querySelector('.delete-btn');
@@ -58,36 +98,37 @@ async function renderSites() {
     
     domainSpan.textContent = site.domain;
     
-    // Determine status badge
+    // Status Logic
+    statusInd.className = 'status-indicator';
     if (!site.enabled) {
-      statusBadge.textContent = 'Disabled';
-      statusBadge.className = 'status-badge';
+      statusInd.title = 'Paused';
     } else if (!site.schedule) {
-      statusBadge.textContent = 'Always Blocked';
-      statusBadge.className = 'status-badge active';
+      statusInd.title = 'Always Bound';
+      statusInd.classList.add('active');
     } else {
       const { days, startMinutes, endMinutes } = site.schedule;
       const dayMatch = days.includes(currentDay);
       const timeMatch = currentMinutes >= startMinutes && currentMinutes < endMinutes;
       
       if (dayMatch && timeMatch) {
-        statusBadge.textContent = 'Active (Scheduled)';
-        statusBadge.className = 'status-badge active';
+        statusInd.title = 'Active Now';
+        statusInd.classList.add('active');
       } else {
-        statusBadge.textContent = 'Inactive (Scheduled)';
-        statusBadge.className = 'status-badge scheduled';
+        statusInd.title = 'Scheduled (Inactive)';
       }
     }
     
-    toggleBtn.textContent = site.enabled ? 'Disable' : 'Enable';
+    toggleBtn.textContent = site.enabled ? 'Pause' : 'Resume';
     toggleBtn.onclick = async () => {
       site.enabled = !site.enabled;
       await saveSites(sites);
     };
     
     deleteBtn.onclick = async () => {
+      const deletedDomain = site.domain;
       sites.splice(index, 1);
       await saveSites(sites);
+      showToast(`${deletedDomain} removed from sanctuary.`, 'info');
     };
     
     scheduleBtn.onclick = () => {
@@ -108,29 +149,61 @@ async function renderSites() {
 }
 
 async function renderAdvanced() {
+  if (!defaultScheduleEditor) return;
   const schedule = await getDefaultSchedule();
+  const bypassDuration = await getBypassDuration();
+
+  // Handle Bypass Duration UI
+  const bypassInput = document.getElementById('bypassDurationInput');
+  const saveBypassBtn = document.getElementById('saveBypassDurationBtn');
+  
+  if (bypassInput) bypassInput.value = bypassDuration;
+  if (saveBypassBtn) {
+    saveBypassBtn.onclick = async () => {
+      const val = parseInt(bypassInput.value);
+      if (val > 0) {
+        await setBypassDuration(val);
+        showToast('Bypass rhythm updated.', 'success');
+      }
+    };
+  }
+
   defaultScheduleEditor.innerHTML = `
-    <div class="days-selector">
-      ${[0, 1, 2, 3, 4, 5, 6].map(d => `
-        <label><input type="checkbox" value="${d}" ${schedule.days.includes(d) ? 'checked' : ''}> ${['S', 'M', 'T', 'W', 'T', 'F', 'S'][d]}</label>
-      `).join('')}
+    <div class="editor-inner">
+      <div class="days-grid">
+        ${[0, 1, 2, 3, 4, 5, 6].map(d => `
+          <label><input type="checkbox" value="${d}" ${schedule.days.includes(d) ? 'checked' : ''}> ${['S', 'M', 'T', 'W', 'T', 'F', 'S'][d]}</label>
+        `).join('')}
+      </div>
+      <div class="time-range">
+        <div class="time-input">
+          <span class="label">From</span>
+          <input type="time" class="start-time" value="${minutesToTimeString(schedule.startMinutes)}">
+        </div>
+        <div class="time-input">
+          <span class="label">To</span>
+          <input type="time" class="end-time" value="${minutesToTimeString(schedule.endMinutes)}">
+        </div>
+      </div>
+      <button id="saveDefaultScheduleBtn" class="zen-btn primary">Save Default Schedule</button>
     </div>
-    <div class="time-selector">
-      <label>Start: <input type="time" class="start-time" value="${minutesToTimeString(schedule.startMinutes)}"></label>
-      <label>End: <input type="time" class="end-time" value="${minutesToTimeString(schedule.endMinutes)}"></label>
-    </div>
-    <button id="saveDefaultScheduleBtn" style="font-size: 0.7em; margin-top: 5px;">Save Default</button>
   `;
 
   document.getElementById('saveDefaultScheduleBtn').onclick = async () => {
     const newSchedule = readEditor(defaultScheduleEditor);
     await setDefaultSchedule(newSchedule);
-    alert('Default schedule saved.');
+    
+    // Apply to all existing sites as well
+    const sites = await getBlockedSites();
+    const updatedSites = sites.map(s => ({ ...s, schedule: newSchedule }));
+    await saveSites(updatedSites);
+    
+    showToast('Default schedule updated and applied to all sites.', 'success');
   };
 }
 
 function fillEditor(editor, schedule = null) {
-  const dayCheckboxes = editor.querySelectorAll('.days-selector input');
+  const dayCheckboxes = editor.querySelectorAll('input[type="checkbox"]');
   const startTimeInput = editor.querySelector('.start-time');
   const endTimeInput = editor.querySelector('.end-time');
   
@@ -144,7 +217,7 @@ function fillEditor(editor, schedule = null) {
 }
 
 function readEditor(editor) {
-  const dayCheckboxes = editor.querySelectorAll('.days-selector input');
+  const dayCheckboxes = editor.querySelectorAll('input[type="checkbox"]');
   const startTimeInput = editor.querySelector('.start-time');
   const endTimeInput = editor.querySelector('.end-time');
   
@@ -166,7 +239,7 @@ async function saveSites(sites) {
 async function addNewSite(domain) {
   const sites = await getBlockedSites();
   if (sites.some(s => s.domain === domain)) {
-    alert(`${domain} is already in your block list.`);
+    showToast(`${domain} is already in your boundaries.`, 'error');
     return;
   }
   
@@ -179,55 +252,64 @@ async function addNewSite(domain) {
   });
   
   await saveSites(sites);
+  showToast(`${domain} boundary defined.`, 'success');
 }
 
-addSiteForm.onsubmit = async (e) => {
-  e.preventDefault();
-  const domain = newSiteDomain.value.trim();
-  if (domain) {
-    await addNewSite(domain);
-    newSiteDomain.value = '';
-  }
-};
+if (addSiteForm) {
+  addSiteForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const domain = newSiteDomain.value.trim();
+    if (domain) {
+      await addNewSite(domain);
+      newSiteDomain.value = '';
+    }
+  };
+}
 
-// Preset Buttons
-document.querySelectorAll('.preset-btn').forEach(btn => {
+// Preset Buttons (Updated selector)
+document.querySelectorAll('.pill').forEach(btn => {
   btn.onclick = () => addNewSite(btn.dataset.domain);
 });
 
 // Import/Export
-exportBtn.onclick = async () => {
-  const settings = await chrome.storage.sync.get(['blockedSites', 'defaultSchedule']);
-  const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `intentional-settings-${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-};
-
-importBtn.onclick = () => importFile.click();
-
-importFile.onchange = async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    try {
-      const settings = JSON.parse(e.target.result);
-      if (confirm('This will overwrite your current settings. Proceed?')) {
-        await chrome.storage.sync.set(settings);
-        await init();
-        alert('Settings imported successfully.');
-      }
-    } catch (err) {
-      alert('Failed to parse settings file.');
-    }
+if (exportBtn) {
+  exportBtn.onclick = async () => {
+    const settings = await chrome.storage.sync.get(['blockedSites', 'defaultSchedule']);
+    const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `intentional-sanctuary-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
-  reader.readAsText(file);
-};
+}
+
+if (importBtn) {
+  importBtn.onclick = () => importFile.click();
+}
+
+if (importFile) {
+  importFile.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const settings = JSON.parse(e.target.result);
+        if (confirm('This will replace your current boundaries. Proceed?')) {
+          await chrome.storage.sync.set(settings);
+          await init();
+          showToast('Sanctuary imported.', 'success');
+        }
+      } catch (err) {
+        showToast('Failed to parse sanctuary file.', 'error');
+      }
+    };
+    reader.readAsText(file);
+  };
+}
 
 async function init() {
   await renderStats();
@@ -236,5 +318,4 @@ async function init() {
 }
 
 init();
-// Update status badges every minute as time passes
 setInterval(init, 60000);

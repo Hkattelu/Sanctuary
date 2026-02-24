@@ -1,0 +1,204 @@
+/* popup/popup.css */
+
+:root {
+  --stone: oklch(0.98 0.01 70);
+  --ink: oklch(0.2 0.02 260);
+  --moss: oklch(0.55 0.08 150);
+  --terra: oklch(0.6 0.12 35);
+  --sand: oklch(0.85 0.06 75);
+  
+  --font-serif: "Fraunces", serif;
+  --font-sans: "Bricolage Grotesque", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 320px;
+  background-color: var(--stone);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow: hidden;
+  padding: 24px;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3仿真%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-box {
+  width: 32px;
+  height: 32px;
+  color: var(--moss);
+}
+
+.logo-pulse {
+  animation: breathe-logo 4s infinite ease-in-out;
+}
+
+@keyframes breathe-logo {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(2.5); opacity: 0.4; }
+}
+
+h1 {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Stats Hero */
+.stats-hero {
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.stats-hero .value {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 3.5rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--moss);
+  font-variation-settings: "wght" 300, "opsz" 144;
+  animation: breathe-val 6s infinite ease-in-out;
+}
+
+@keyframes breathe-val {
+  0%, 100% { font-variation-settings: "wght" 300, "opsz" 144; }
+  50% { font-variation-settings: "wght" 500, "opsz" 144; }
+}
+
+.stats-hero .label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+}
+
+/* Status Belt */
+.status-belt {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--moss);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: var(--moss);
+  border-radius: 50%;
+}
+
+/* Controls */
+.controls {
+  display: flex;
+  gap: 12px;
+}
+
+.action-btn {
+  border: none;
+  cursor: pointer;
+  background: var(--ink);
+  color: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.main-action {
+  flex: 1;
+  padding: 16px;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.main-action .btn-text {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.main-action .btn-detail {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
+
+.icon-only {
+  width: 56px;
+  background: white;
+  color: var(--ink);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+}
+
+.main-action:hover {
+  background: var(--moss);
+}
+
+.icon-only:hover {
+  color: var(--moss);
+}
+
+footer {
+  text-align: center;
+  padding-top: 12px;
+}
+
+#quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  opacity: 0.4;
+  max-width: 25ch;
+  margin: 0 auto;
+}

@@ -1,28 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Intentional Pause</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="blocked.css">
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
 </head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Intentional</h1>
+<body class="mindful-theme">
+  <!-- Subtle grain/noise overlay -->
+  <div class="grain-overlay"></div>
+  
+  <div class="zen-canvas">
+    <!-- Breathing orbs -->
+    <div class="orb primary-orb"></div>
+    <div class="orb accent-orb"></div>
+  </div>
+
+  <div class="interface">
+    <header class="fade-in-delayed">
+      <div class="logo-mark">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="0.5" stroke-dasharray="2 4" />
+          <circle class="logo-pulse" cx="20" cy="20" r="4" fill="currentColor" />
+        </svg>
+      </div>
+      <span class="site-label" id="siteName">...</span>
     </header>
 
-    <div class="prompt-container">
-      <p id="prompt">...</p>
-    </div>
+    <main>
+      <div class="reflection">
+        <h1 id="prompt" class="prompt-text">
+          Breathe.
+        </h1>
+        <div class="breathe-indicator">
+          <span class="label-in">In</span>
+          <span class="label-out">Out</span>
+        </div>
+      </div>
+    </main>
 
-    <div class="actions">
-      <button id="bypassBtn" disabled>Wait (10s)...</button>
-    </div>
-
-    <footer class="footer">
-      <p id="siteName">...</p>
+    <footer class="fade-in-delayed">
+      <div class="actions">
+        <button id="closeTabBtn" class="zen-button primary">
+          Return to Stillness
+          <span class="btn-sub">Close this tab</span>
+        </button>
+        <button id="bypassBtn" class="zen-button secondary" disabled>
+          Continue
+          <span id="countdownLabel" class="btn-sub">...</span>
+        </button>
+      </div>
     </footer>
   </div>
+  
   <script src="blocked.js"></script>
 </body>
 </html>

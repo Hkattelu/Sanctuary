@@ -83,9 +83,10 @@ async function handleBypass(domain) {
     addRules: [bypassRule]
   });
 
-  // Schedule removal after 15 minutes
+  // Schedule removal after configured minutes
+  const duration = await getBypassDuration();
   const alarmName = `bypass_${domain}`;
-  await chrome.alarms.create(alarmName, { delayInMinutes: 15 });
+  await chrome.alarms.create(alarmName, { delayInMinutes: duration });
   
   bypassRules[domain] = ruleId;
   await chrome.storage.local.set({ bypassRules });

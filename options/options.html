@@ -1,109 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Intentional Settings</title>
+  <title>Intentional Sanctuary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="options.css">
+  <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
 </head>
-<body>
-  <div class="container">
+<body class="zen-options">
+  <div class="grain"></div>
+  
+  <div class="container fade-in">
     <header>
-      <h1>Intentional</h1>
-      <p class="subtitle">Mindful site blocker settings</p>
+      <div class="logo-box">
+        <svg viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="0.5" stroke-dasharray="2 4" />
+          <circle class="logo-pulse" cx="20" cy="20" r="4" fill="currentColor" />
+        </svg>
+      </div>
+      <h1>Sanctuary</h1>
+      <p class="subtitle">Curate your digital presence.</p>
     </header>
 
-    <section class="stats-dashboard">
-      <div class="stat-card">
-        <span class="stat-value" id="totalBlocks">0</span>
-        <span class="stat-label">Blocks (7d)</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value" id="timeSaved">0m</span>
-        <span class="stat-label">Time Saved</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value" id="topSite">-</span>
-        <span class="stat-label">Most Blocked</span>
-      </div>
-    </section>
-
-    <section class="main-content">
-      <div class="left-panel">
-        <section class="add-site">
-          <h2>Add Site</h2>
-          <form id="addSiteForm">
-            <input type="text" id="newSiteDomain" placeholder="e.g., twitter.com" required>
-            <button type="submit">Add</button>
-          </form>
-        </section>
-
-        <section class="presets">
-          <h2>Presets</h2>
-          <div class="preset-buttons">
-            <button class="preset-btn" data-domain="x.com">X / Twitter</button>
-            <button class="preset-btn" data-domain="instagram.com">Instagram</button>
-            <button class="preset-btn" data-domain="facebook.com">Facebook</button>
-            <button class="preset-btn" data-domain="tiktok.com">TikTok</button>
-            <button class="preset-btn" data-domain="youtube.com">YouTube</button>
+    <main>
+      <!-- Hero Section: The Cairn (Asymmetric Growth) -->
+      <section class="zen-hero">
+        <div class="hero-visual">
+          <div id="cairnContainer" class="cairn-stack">
+            <!-- Stones added via JS based on stats -->
           </div>
-        </section>
+          <div class="hero-primary">
+            <span class="value" id="timeSaved">0m</span>
+            <span class="label">Life Reclaimed</span>
+          </div>
+        </div>
+        
+        <div class="hero-secondary">
+          <div class="stat-pill">
+            <span class="label">Breathes</span>
+            <span class="value" id="totalBlocks">0</span>
+          </div>
+          <div class="stat-pill">
+            <span class="label">Top Distraction</span>
+            <span class="value" id="topSite">-</span>
+          </div>
+        </div>
+      </section>
 
-        <section class="advanced">
-          <h2>Advanced</h2>
-          <div class="advanced-item">
-            <label>Default Schedule</label>
-            <div id="defaultScheduleEditor" class="schedule-editor mini">
-              <!-- Rendered via JS -->
+      <!-- Notification Toast Container -->
+      <div id="notificationRoot" class="notification-container"></div>
+
+      <!-- Site Management -->
+      <section class="sanctuary-control">
+        <div class="action-bar">
+          <form id="addSiteForm" class="add-site-row">
+            <input type="text" id="newSiteDomain" placeholder="Enter domain to block (e.g. twitter.com)" required>
+            <button type="submit" class="zen-btn primary">Add Site</button>
+          </form>
+          
+          <div class="presets">
+            <span class="label">Quick Add:</span>
+            <div class="preset-pills">
+              <button class="pill" data-domain="x.com">X</button>
+              <button class="pill" data-domain="instagram.com">Instagram</button>
+              <button class="pill" data-domain="facebook.com">Facebook</button>
+              <button class="pill" data-domain="tiktok.com">TikTok</button>
+              <button class="pill" data-domain="youtube.com">YouTube</button>
             </div>
           </div>
+        </div>
+
+        <div class="list-container">
+          <div class="list-header">
+            <h2>Blocked Sites</h2>
+            <div class="header-line"></div>
+          </div>
+          <div id="sitesContainer" class="site-list">
+            <!-- Site entries rendered via JS -->
+          </div>
+        </div>
+
+        <div class="advanced-section">
+          <div class="list-header">
+            <h2>Default Schedule</h2>
+            <div class="header-line"></div>
+          </div>
+          <p class="section-desc">New sites will follow this schedule by default.</p>
+          <div id="defaultScheduleEditor" class="schedule-editor-wrapper">
+            <!-- Rendered via JS -->
+          </div>
+
+          <div class="list-header">
+            <h2>Temporary Access</h2>
+            <div class="header-line"></div>
+          </div>
+          <p class="section-desc">How long does "Continue" last before the site is blocked again?</p>
+          <div class="bypass-duration-wrapper">
+            <div class="time-input">
+              <input type="number" id="bypassDurationInput" min="1" max="1440" value="15">
+              <span class="label">minutes</span>
+            </div>
+            <button id="saveBypassDurationBtn" class="zen-btn primary">Save Duration</button>
+          </div>
+
           <div class="advanced-actions">
-            <button id="exportBtn">Export Settings</button>
-            <button id="importBtn">Import Settings</button>
+            <button id="exportBtn" class="action-link">Export Sanctuary</button>
+            <button id="importBtn" class="action-link">Import Sanctuary</button>
             <input type="file" id="importFile" class="hidden" accept=".json">
           </div>
-        </section>
-      </div>
-
-      <div class="right-panel">
-        <section class="site-list">
-          <h2>Blocked Sites</h2>
-          <div id="sitesContainer">
-            <!-- Site entries will be rendered here -->
-          </div>
-        </section>
-      </div>
-    </section>
+        </div>
+      </section>
+    </main>
   </div>
 
+  <!-- Reusable Template -->
   <template id="siteTemplate">
     <div class="site-entry">
-      <div class="site-header">
-        <div class="site-info">
+      <div class="entry-header">
+        <div class="entry-meta">
           <span class="domain"></span>
-          <span class="status-badge"></span>
+          <span class="status-indicator"></span>
         </div>
-        <div class="site-actions">
-          <button class="toggle-btn"></button>
-          <button class="edit-schedule-btn">Schedule</button>
-          <button class="delete-btn">Delete</button>
+        <div class="entry-controls">
+          <button class="icon-btn toggle-btn" title="Toggle Status">Toggle</button>
+          <button class="icon-btn edit-schedule-btn">Schedule</button>
+          <button class="icon-btn delete-btn">Remove</button>
         </div>
       </div>
       
       <div class="schedule-editor hidden">
-        <div class="days-selector">
-          <label><input type="checkbox" value="0"> S</label>
-          <label><input type="checkbox" value="1"> M</label>
-          <label><input type="checkbox" value="2"> T</label>
-          <label><input type="checkbox" value="3"> W</label>
-          <label><input type="checkbox" value="4"> T</label>
-          <label><input type="checkbox" value="5"> F</label>
-          <label><input type="checkbox" value="6"> S</label>
+        <div class="editor-inner">
+          <div class="days-grid">
+            <label><input type="checkbox" value="0">S</label>
+            <label><input type="checkbox" value="1">M</label>
+            <label><input type="checkbox" value="2">T</label>
+            <label><input type="checkbox" value="3">W</label>
+            <label><input type="checkbox" value="4">T</label>
+            <label><input type="checkbox" value="5">F</label>
+            <label><input type="checkbox" value="6">S</label>
+          </div>
+          <div class="time-range">
+            <div class="time-input">
+              <span class="label">From</span>
+              <input type="time" class="start-time">
+            </div>
+            <div class="time-input">
+              <span class="label">To</span>
+              <input type="time" class="end-time">
+            </div>
+          </div>
+          <button class="zen-btn save-schedule-btn">Save Schedule</button>
         </div>
-        <div class="time-selector">
-          <label>Start: <input type="time" class="start-time"></label>
-          <label>End: <input type="time" class="end-time"></label>
-        </div>
-        <button class="save-schedule-btn">Save</button>
       </div>
     </div>
   </template>
