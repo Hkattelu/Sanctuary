@@ -151,15 +151,12 @@ header {
 
 @keyframes breathe-text {
   0%, 100% { 
-    font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 144, "wght" 200;
-    letter-spacing: -0.02em;
-    transform: scale(0.98);
+    opacity: 0.8;
+    transform: scale(0.95);
   }
   50% { 
-    font-variation-settings: "SOFT" 100, "WONK" 1, "opsz" 144, "wght" 500;
-    letter-spacing: 0.04em;
     opacity: 1;
-    transform: scale(1.02);
+    transform: scale(1.05);
   }
 }
 
@@ -167,24 +164,24 @@ header {
   display: flex;
   gap: 40px;
   font-family: var(--font-sans);
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  opacity: 0.3;
+  color: var(--ink);
 }
 
 .label-in { animation: pulse-in 6s infinite ease-in-out; }
 .label-out { animation: pulse-out 6s infinite ease-in-out; }
 
 @keyframes pulse-in {
-  0%, 40% { opacity: 1; transform: translateY(-2px); }
-  50%, 100% { opacity: 0.2; transform: translateY(0); }
+  0%, 40% { opacity: 1; transform: scale(1.1); color: var(--moss); }
+  50%, 100% { opacity: 0.4; transform: scale(1); color: var(--ink); }
 }
 
 @keyframes pulse-out {
-  0%, 50% { opacity: 0.2; transform: translateY(0); }
-  60%, 100% { opacity: 1; transform: translateY(2px); }
+  0%, 50% { opacity: 0.4; transform: scale(1); color: var(--ink); }
+  60%, 100% { opacity: 1; transform: scale(1.1); color: var(--terra); }
 }
 
 /* Actions */
