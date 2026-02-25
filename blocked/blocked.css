@@ -40,6 +40,12 @@ body {
   pointer-events: none;
   opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3仿真%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  animation: grain-breathe 10s infinite alternate ease-in-out;
+}
+
+@keyframes grain-breathe {
+  0% { opacity: 0.03; }
+  100% { opacity: 0.06; }
 }
 
 /* Zen Background */
@@ -175,13 +181,15 @@ header {
 .label-out { animation: pulse-out 6s infinite ease-in-out; }
 
 @keyframes pulse-in {
-  0%, 40% { opacity: 1; transform: scale(1.1); color: var(--moss); }
+  0% { opacity: 0.4; transform: scale(1); color: var(--ink); }
+  10%, 40% { opacity: 1; transform: scale(1.1); color: var(--moss); }
   50%, 100% { opacity: 0.4; transform: scale(1); color: var(--ink); }
 }
 
 @keyframes pulse-out {
   0%, 50% { opacity: 0.4; transform: scale(1); color: var(--ink); }
-  60%, 100% { opacity: 1; transform: scale(1.1); color: var(--terra); }
+  60%, 90% { opacity: 1; transform: scale(1.1); color: var(--terra); }
+  100% { opacity: 0.4; transform: scale(1); color: var(--ink); }
 }
 
 /* Actions */
@@ -196,33 +204,56 @@ footer {
 }
 
 .zen-button {
-  background: none;
-  border: none;
-  padding: 0;
+  background: color-mix(in oklch, var(--stone-200), transparent 50%);
+  border: 1px solid transparent;
+  padding: 12px 24px;
+  border-radius: 100px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   font-family: var(--font-sans);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--ink);
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   text-decoration: none;
+  backdrop-filter: blur(4px);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Progress Fill Effect */
+.zen-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklch, var(--stone-200), transparent 10%);
+  width: var(--progress, 0%);
+  z-index: -1;
+  transition: width 1s linear;
+  opacity: 0.5;
 }
 
 .zen-button .btn-sub {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  opacity: 0.4;
+  opacity: 0.5;
   transition: opacity 0.3s;
 }
 
 .zen-button:hover {
-  transform: translateY(-4px);
+  background: color-mix(in oklch, var(--stone-200), transparent 20%);
+  transform: translateY(-2px);
+  border-color: color-mix(in oklch, var(--ink), transparent 90%);
+}
+
+.zen-button:active {
+  transform: translateY(0);
 }
 
 .zen-button:hover .btn-sub {
@@ -231,29 +262,53 @@ footer {
 
 .zen-button.primary {
   color: var(--moss);
+  background: color-mix(in oklch, var(--moss), transparent 92%);
+}
+
+.zen-button.primary:hover {
+  background: color-mix(in oklch, var(--moss), transparent 85%);
+  color: color-mix(in oklch, var(--moss), black 10%);
 }
 
 .zen-button.secondary {
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .zen-button.secondary:not(:disabled) {
-  opacity: 1;
   color: var(--terra);
+  background: color-mix(in oklch, var(--terra), transparent 92%);
+}
+
+.zen-button.secondary:not(:disabled):hover {
+  background: color-mix(in oklch, var(--terra), transparent 85%);
 }
 
 .zen-button:disabled {
-  cursor: default;
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: transparent;
   transform: none !important;
 }
 
-/* Animations for loading */
-.fade-in-delayed {
-  animation: fadeIn 2s forwards;
+/* Staggered Blur Entrance */
+.blur-in {
   opacity: 0;
+  animation: blurIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.delay-1 { animation-delay: 100ms; }
+.delay-2 { animation-delay: 300ms; }
+.delay-3 { animation-delay: 500ms; }
+
+@keyframes blurIn {
+  from { 
+    opacity: 0; 
+    transform: scale(1.05); 
+    filter: blur(12px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+    filter: blur(0); 
+  }
 }

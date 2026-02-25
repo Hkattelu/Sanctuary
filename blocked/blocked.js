@@ -30,8 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Countdown for the bypass button
-  let secondsLeft = 15;
+  const TOTAL_SECONDS = 15;
+  let secondsLeft = TOTAL_SECONDS;
   const countdownLabel = document.getElementById('countdownLabel');
+  
+  // Initialize progress
+  bypassBtn.style.setProperty('--progress', '0%');
   
   if (countdownLabel) {
     countdownLabel.textContent = `Awaiting stillness (${secondsLeft}s)`;
@@ -39,11 +43,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const countdown = setInterval(() => {
     secondsLeft--;
+    
+    // Calculate progress percentage
+    const progress = ((TOTAL_SECONDS - secondsLeft) / TOTAL_SECONDS) * 100;
+    bypassBtn.style.setProperty('--progress', `${progress}%`);
+    
     if (secondsLeft > 0) {
       if (countdownLabel) countdownLabel.textContent = `Awaiting stillness (${secondsLeft}s)`;
     } else {
       clearInterval(countdown);
-      if (countdownLabel) countdownLabel.textContent = "Ready to proceed";
+      if (countdownLabel) countdownLabel.textContent = "Proceed with intention";
       bypassBtn.disabled = false;
       bypassBtn.classList.add('ready');
     }
