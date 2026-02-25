@@ -390,3 +390,21 @@ body.theme-linkedin {
   --moss: oklch(0.45 0.12 250); /* Calm Professional Blue */
   --terra: oklch(0.6 0.12 85); /* Muted Gold/Sand */
 }
+
+/* Instagram: "The Filtered Reality" - Sunset & Rose */
+body.theme-instagram {
+  --moss: oklch(0.55 0.2 340); /* Vibrant Pink/Magenta */
+  --terra: oklch(0.65 0.18 40); /* Warm Orange/Gold */
+}
+
+/* YouTube: "The Endless Stream" - Red & Dark Slate */
+body.theme-youtube {
+  --moss: oklch(0.5 0.2 25); /* Deep Red */
+  --terra: oklch(0.25 0.05 260); /* Almost Black/Slate */
+}
+
+/* TikTok: "The Glitch" - Cyan & Neon Red */
+body.theme-tiktok {
+  --moss: oklch(0.6 0.2 180); /* Bright Cyan */
+  --terra: oklch(0.55 0.25 340); /* Electric Pink/Red */
+}

@@ -39,13 +39,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       handleBypass(message.domain)
         .then(() => sendResponse({ status: 'success' }))
         .catch((err) => {
-          console.error('[Intentional] Bypass error:', err);
+          console.error('[Sanctuary] Bypass error:', err);
           sendResponse({ status: 'error', message: err.message });
         });
       return true; // Keep channel open for async response
     }
   } catch (err) {
-    console.error('[Intentional] Message handling error:', err);
+    console.error('[Sanctuary] Message handling error:', err);
   }
 });
 

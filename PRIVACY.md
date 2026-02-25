@@ -1,24 +1,31 @@
-# Privacy Policy for Intentional
+# Privacy Policy for Sanctuary
 
-**Effective Date:** February 23, 2026
+Sanctuary is a browser extension designed to help you reclaim your focus by mindfully blocking distracting websites. We take your privacy seriously.
 
-Intentional is a browser extension designed to help you reclaim your focus by mindfully blocking distracting websites. We take your privacy seriously.
+Sanctuary is built on the principle of **Data Minimization**.
 
-## 1. Data Collection and Usage
-Intentional is built on the principle of **Data Minimization**. 
-- **Personal Data:** We do NOT collect, store, or transmit any personal identification information (PII), such as your name, email address, or browsing history.
-- **Extension Settings:** Your list of blocked domains and custom schedules are stored exclusively in your browser's `chrome.storage.sync` profile. This allows your settings to roam across your Chrome devices if you are signed in, but this data is managed by Google and is not accessible to us.
-- **Usage Statistics:** Local block counts (e.g., how many times "reddit.com" was blocked today) are stored exclusively in your browser's `chrome.storage.local`. This data never leaves your device and is used only to display your personal "Time Saved" dashboard.
+### 1. No Data Collection
+Sanctuary does NOT collect, store, or transmit any of your personal data, browsing history, or the list of sites you choose to block to any external servers. All settings, block lists, and local statistics stay entirely on your own device.
 
-## 2. Data Sharing
-We do NOT share, sell, or trade your data with any third parties. There are no analytics trackers or advertising scripts embedded in Intentional.
+### 2. No Third-Party Sharing
+We do NOT share, sell, or trade your data with any third parties. There are no analytics trackers or advertising scripts embedded in Sanctuary.
 
-## 3. Permissions Justification
-- `declarativeNetRequest`: Required to perform the core function of redirecting distracting sites to a pause screen without reading your page content.
-- `storage`: Required to save your block lists and progress.
-- `alarms`: Required to periodically check and sync your schedules.
-- `tabs`: Required to allow you to bypass a block when you genuinely need to access a site.
-- `host_permissions` (<all_urls>): Required so the extension can block any domain you choose to add to your list.
+### 3. Local Storage
+Sanctuary uses `chrome.storage.local` and `chrome.storage.sync` to save your preferences and blocked site list.
+- `chrome.storage.local`: Used for local statistics and temporary state.
+- `chrome.storage.sync`: Used for your settings and blocked list, which Google may sync across your own signed-in Chrome browsers. This data is not accessible by the developers of Sanctuary.
 
-## 4. Contact
-If you have any questions about this Privacy Policy, please contact the developer via the Chrome Web Store support page.
+### 4. Permissions
+Sanctuary requires certain permissions to function:
+- `declarativeNetRequest`: To block and redirect the websites you specify.
+- `storage`: To save your preferences and block list.
+- `alarms`: To handle the scheduling of your blocks and bypass timers.
+- `tabs`: To detect the active tab and apply blocking logic.
+
+### 5. Changes to This Policy
+We may update this privacy policy from time to time. Any changes will be reflected in the updated version of the extension.
+
+### Contact
+If you have any questions about this privacy policy, you can reach out via the official extension support channels.
+
+*Last Updated: February 24, 2026*

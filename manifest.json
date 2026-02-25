@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Sanctuary",
   "version": "1.0.0",
-  "description": "A mindful site blocker that replaces distractions with reflection prompts and a calm pause screen. Reclaim your focus intentionally.",
+  "description": "A mindful site blocker that replaces distractions with reflection prompts and a calm pause screen. Reclaim your focus with Sanctuary.",
   "permissions": [
     "declarativeNetRequest",
     "storage",

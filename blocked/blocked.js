@@ -45,6 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
       prompt: "Don't let the noise drown out your own voice.",
       closeBtnText: "Silence the Noise",
       subText: "Close this tab"
+    },
+    'instagram.com': {
+      theme: 'theme-instagram',
+      prompt: "Real life is happening right here, right now.\nNot in the feed.",
+      closeBtnText: "Be Present",
+      subText: "Close this tab"
+    },
+    'youtube.com': {
+      theme: 'theme-youtube',
+      prompt: "One video turns into ten.\nIs this what you came for?",
+      closeBtnText: "Break the Loop",
+      subText: "Close this tab"
+    },
+    'tiktok.com': {
+      theme: 'theme-tiktok',
+      prompt: "Seconds turn into hours.\nReclaim your time.",
+      closeBtnText: "Stop Scrolling",
+      subText: "Close this tab"
     }
   };
 
@@ -74,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     // Fallback to random generic prompt
     promptEl.textContent = prompts[Math.floor(Math.random() * prompts.length)];
+    document.title = "Sanctuary";
   }
   
   // Log the block event to background script
