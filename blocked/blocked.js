@@ -20,9 +20,62 @@ document.addEventListener('DOMContentLoaded', () => {
     "What if you chose a different path today?"
   ];
 
-  // Pick a random prompt
-  promptEl.textContent = prompts[Math.floor(Math.random() * prompts.length)];
+  // --- DELIGHT: Site-Specific Context ---
+  const siteConfig = {
+    'reddit.com': {
+      theme: 'theme-reddit',
+      prompt: "The rabbit hole is endless.\nYou are not.",
+      closeBtnText: "Escape the Hivemind",
+      subText: "Close this tab"
+    },
+    'linkedin.com': {
+      theme: 'theme-linkedin',
+      prompt: "Comparison is the thief of joy.\nFocus on your own path.",
+      closeBtnText: "Disconnect & Create",
+      subText: "Close this tab"
+    },
+    'twitter.com': {
+      theme: 'theme-reddit',
+      prompt: "Don't let the noise drown out your own voice.",
+      closeBtnText: "Silence the Noise",
+      subText: "Close this tab"
+    },
+    'x.com': {
+      theme: 'theme-reddit',
+      prompt: "Don't let the noise drown out your own voice.",
+      closeBtnText: "Silence the Noise",
+      subText: "Close this tab"
+    }
+  };
 
+  // Check for exact match or domain containment
+  let activeConfig = null;
+  // Iterate keys to find a match (e.g. 'old.reddit.com' includes 'reddit.com')
+  for (const key of Object.keys(siteConfig)) {
+    if (domain.includes(key)) {
+      activeConfig = siteConfig[key];
+      break;
+    }
+  }
+
+  if (activeConfig) {
+    // Apply Theme
+    document.body.classList.add(activeConfig.theme);
+    
+    // Set Custom Content
+    promptEl.innerText = activeConfig.prompt;
+    document.title = activeConfig.closeBtnText; // Update tab title for delight
+    
+    // Update Close Button safely
+    closeTabBtn.innerHTML = `
+      ${activeConfig.closeBtnText}
+      <span class="btn-sub">${activeConfig.subText}</span>
+    `;
+  } else {
+    // Fallback to random generic prompt
+    promptEl.textContent = prompts[Math.floor(Math.random() * prompts.length)];
+  }
+  
   // Log the block event to background script
   chrome.runtime.sendMessage({ 
     type: 'BLOCK_EVENT', 

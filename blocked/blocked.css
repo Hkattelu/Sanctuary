@@ -5,8 +5,9 @@
   --stone-100: oklch(0.94 0.02 70);
   --stone-200: oklch(0.88 0.03 70);
   --ink: oklch(0.15 0.02 260);
-  --moss: oklch(0.55 0.08 150);
-  --terra: oklch(0.6 0.12 35);
+  /* Darkened accents for WCAG AA compliance on light bg */
+  --moss: oklch(0.45 0.09 150);
+  --terra: oklch(0.5 0.13 35);
   --sand: oklch(0.85 0.06 75);
   
   --font-serif: "Fraunces", serif;
@@ -38,14 +39,14 @@ body {
   inset: 0;
   z-index: 10;
   pointer-events: none;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3仿真%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03; /* Reduced slightly to prevent washout */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   animation: grain-breathe 10s infinite alternate ease-in-out;
 }
 
 @keyframes grain-breathe {
-  0% { opacity: 0.03; }
-  100% { opacity: 0.06; }
+  0% { opacity: 0.02; }
+  100% { opacity: 0.05; }
 }
 
 /* Zen Background */
@@ -62,7 +63,7 @@ body {
 .orb {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.6;
+  opacity: 0.5; /* Slightly reduced for better text contrast overlap */
   filter: blur(140px);
   animation: float 25s infinite alternate ease-in-out;
 }
@@ -132,8 +133,9 @@ header {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.75rem;
-  font-weight: 600;
-  opacity: 0.5;
+  font-weight: 700; /* Increased from 600 */
+  color: var(--ink);
+  opacity: 0.7; /* Increased from 0.5 */
 }
 
 /* Reflection Content */
@@ -147,22 +149,22 @@ header {
 .prompt-text {
   font-family: var(--font-serif);
   font-size: clamp(2rem, 8vw, 4rem);
-  font-weight: 200;
+  font-weight: 320; /* Increased from 200 for legibility */
   font-style: italic;
-  line-height: 1.1;
-  max-width: 12ch;
+  line-height: 1.2; /* Improved line height */
+  max-width: 14ch;
   animation: breathe-text 6s infinite ease-in-out;
   color: var(--ink);
 }
 
 @keyframes breathe-text {
   0%, 100% { 
-    opacity: 0.8;
-    transform: scale(0.95);
+    opacity: 0.9; /* Increased base opacity */
+    transform: scale(0.98);
   }
   50% { 
     opacity: 1;
-    transform: scale(1.05);
+    transform: scale(1.02);
   }
 }
 
@@ -170,10 +172,10 @@ header {
   display: flex;
   gap: 40px;
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   color: var(--ink);
 }
 
@@ -181,15 +183,15 @@ header {
 .label-out { animation: pulse-out 6s infinite ease-in-out; }
 
 @keyframes pulse-in {
-  0% { opacity: 0.4; transform: scale(1); color: var(--ink); }
+  0% { opacity: 0.5; transform: scale(1); color: var(--ink); }
   10%, 40% { opacity: 1; transform: scale(1.1); color: var(--moss); }
-  50%, 100% { opacity: 0.4; transform: scale(1); color: var(--ink); }
+  50%, 100% { opacity: 0.5; transform: scale(1); color: var(--ink); }
 }
 
 @keyframes pulse-out {
-  0%, 50% { opacity: 0.4; transform: scale(1); color: var(--ink); }
+  0%, 50% { opacity: 0.5; transform: scale(1); color: var(--ink); }
   60%, 90% { opacity: 1; transform: scale(1.1); color: var(--terra); }
-  100% { opacity: 0.4; transform: scale(1); color: var(--ink); }
+  100% { opacity: 0.5; transform: scale(1); color: var(--ink); }
 }
 
 /* Actions */
@@ -204,9 +206,9 @@ footer {
 }
 
 .zen-button {
-  background: color-mix(in oklch, var(--stone-200), transparent 50%);
+  background: color-mix(in oklch, var(--stone-200), transparent 40%);
   border: 1px solid transparent;
-  padding: 12px 24px;
+  padding: 14px 28px; /* Slightly larger touch target */
   border-radius: 100px;
   cursor: pointer;
   display: flex;
@@ -217,12 +219,19 @@ footer {
   font-size: 1rem;
   font-weight: 600;
   color: var(--ink);
-  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   text-decoration: none;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(8px);
   position: relative;
   overflow: hidden;
   isolation: isolate;
+}
+
+/* Focus State */
+.zen-button:focus-visible {
+  outline: 2px solid var(--moss);
+  outline-offset: 4px;
+  background: color-mix(in oklch, var(--stone-200), transparent 20%);
 }
 
 /* Progress Fill Effect */
@@ -238,18 +247,19 @@ footer {
 }
 
 .zen-button .btn-sub {
-  font-size: 0.65rem;
-  font-weight: 500;
+  font-size: 0.7rem;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  opacity: 0.5;
+  opacity: 0.7; /* Increased from 0.5 */
   transition: opacity 0.3s;
 }
 
 .zen-button:hover {
   background: color-mix(in oklch, var(--stone-200), transparent 20%);
   transform: translateY(-2px);
-  border-color: color-mix(in oklch, var(--ink), transparent 90%);
+  border-color: color-mix(in oklch, var(--ink), transparent 85%);
+  box-shadow: 0 4px 20px -8px color-mix(in oklch, var(--ink), transparent 90%);
 }
 
 .zen-button:active {
@@ -262,12 +272,14 @@ footer {
 
 .zen-button.primary {
   color: var(--moss);
-  background: color-mix(in oklch, var(--moss), transparent 92%);
+  background: color-mix(in oklch, var(--moss), transparent 90%);
+  border-color: color-mix(in oklch, var(--moss), transparent 90%);
 }
 
 .zen-button.primary:hover {
-  background: color-mix(in oklch, var(--moss), transparent 85%);
-  color: color-mix(in oklch, var(--moss), black 10%);
+  background: color-mix(in oklch, var(--moss), transparent 80%);
+  color: color-mix(in oklch, var(--moss), black 15%);
+  border-color: color-mix(in oklch, var(--moss), transparent 70%);
 }
 
 .zen-button.secondary {
@@ -276,18 +288,21 @@ footer {
 
 .zen-button.secondary:not(:disabled) {
   color: var(--terra);
-  background: color-mix(in oklch, var(--terra), transparent 92%);
+  background: color-mix(in oklch, var(--terra), transparent 90%);
+  border-color: color-mix(in oklch, var(--terra), transparent 90%);
 }
 
 .zen-button.secondary:not(:disabled):hover {
-  background: color-mix(in oklch, var(--terra), transparent 85%);
+  background: color-mix(in oklch, var(--terra), transparent 80%);
+  border-color: color-mix(in oklch, var(--terra), transparent 70%);
 }
 
 .zen-button:disabled {
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.6; /* Increased from 0.5 */
   background: transparent;
   transform: none !important;
+  color: color-mix(in oklch, var(--ink), transparent 60%);
 }
 
 /* Staggered Blur Entrance */
@@ -303,7 +318,7 @@ footer {
 @keyframes blurIn {
   from { 
     opacity: 0; 
-    transform: scale(1.05); 
+    transform: scale(1.02); /* Reduced movement */
     filter: blur(12px); 
   }
   to { 
@@ -311,4 +326,67 @@ footer {
     transform: scale(1); 
     filter: blur(0); 
   }
+}
+
+/* Donation Link */
+.donation-link {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600; /* Increased weight */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  text-decoration: none;
+  opacity: 0.7; /* Increased from 0.3 for visibility */
+  transition: all 0.3s ease;
+  padding: 10px 20px; /* Larger touch target */
+  background: color-mix(in oklch, var(--stone-50), transparent 10%); /* More solid */
+  border-radius: 100px;
+  backdrop-filter: blur(8px);
+  border: 1px solid color-mix(in oklch, var(--ink), transparent 92%); /* Subtle border by default */
+}
+
+.donation-link svg {
+  color: var(--terra);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.donation-link:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  background: var(--stone-50);
+  border-color: color-mix(in oklch, var(--ink), transparent 85%);
+  box-shadow: 0 4px 12px color-mix(in oklch, var(--ink), transparent 90%);
+}
+
+.donation-link:focus-visible {
+  outline: 2px solid var(--moss);
+  outline-offset: 4px;
+  opacity: 1;
+}
+
+.donation-link:hover svg {
+  transform: scale(1.2);
+  fill: color-mix(in oklch, var(--terra), transparent 80%);
+}
+
+/* --- DELIGHT THEMES --- */
+
+/* Reddit: "The Rabbit Hole" - Earthy Orange & Slate */
+body.theme-reddit {
+  --moss: oklch(0.55 0.15 45); /* Muted Reddit Orange */
+  --terra: oklch(0.4 0.05 250); /* Deep Slate Blue */
+}
+
+/* LinkedIn: "The Professional Façade" - Deep Ocean & Gold */
+body.theme-linkedin {
+  --moss: oklch(0.45 0.12 250); /* Calm Professional Blue */
+  --terra: oklch(0.6 0.12 85); /* Muted Gold/Sand */
 }
